@@ -43,7 +43,7 @@ string m_to_c(string m, string k)
 		}
 		else
 		{
-			c[i] = m[i];//明文为数字不加密
+			c[i] = char(int(m[i])+(t%10));//数字也加密
 		}
 
 		
@@ -81,14 +81,30 @@ string c_to_m(string c, string k)
 		//位移替换
 		if (c[i] >= 'a' &&  c[i] <= 'z')
 		{
-			m[i] = char((c[i] - 'a' - t)%26 + 97);
+			if(c[i] - 'a' - t < 0)
+			{
+				m[i] = char((c[i] - 'a' - t)+26 + 97);
+			}
+			else
+			{
+				m[i] = char((c[i] - 'a' - t)%26 + 97);
+			}
+		
 		}else if (c[i] >= 'A' && c[i] <= 'Z')
 		{
-			m[i] = char((c[i] - 'A' - t)%26 + 65);
+			if(c[i] - 'A' - t < 0)
+			{
+				m[i] = char((c[i] - 'A' - t)+26 + 65);
+			}
+			else
+			{
+				m[i] = char((c[i] - 'A' - t)%26 + 65);
+			}
+		
 		}
 		else
 		{
-			m[i] = c[i];//明文为数字不加密
+			m[i] = char(int(c[i])-(t%10));//数字也加密
 		}
 
 		
@@ -140,7 +156,7 @@ int menu()
 		return opt;
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+int main()
 {
 	
 	while (menu())
@@ -149,4 +165,5 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	return 0;
 }
+
 
