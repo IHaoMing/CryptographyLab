@@ -31,3 +31,4 @@ RC4由伪随机数生成器和异或运算组成。RC4的密钥长度可变，�
  endwhile
 此算法保证每256次循环中S盒的每个元素至少被交换过一次。
 ```
+[代码](https://github.com/IHaoMing/CryptographyLab/blob/master/lab2/RC4.cpp)
