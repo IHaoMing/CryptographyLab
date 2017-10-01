@@ -1,7 +1,25 @@
 # CryptographyLab
 # 密码学实验
 
+[TOC]
+
 ## lab1 维吉尼亚密码
+
+>维吉尼亚密码（又译维热纳尔密码）是使用一系列凯撒密码组成密码字母表的加密算法，属于多表密码的一种简单形式。在一个凯撒密码中，字母表中的每一字母都会作一定的偏移，例如偏移量为3时，A就转换为了D、B转换为了E……而维吉尼亚密码则是由一些偏移量不同的恺撒密码组成。
+为了生成密码，需要使用表格法。这一表格包括了26行字母表，每一行都由前一行向左偏移一位得到。具体使用哪一行字母表进行编译是基于密钥进行的，在过程中会不断地变换。
+例如，假设明文为：
+ATTACKATDAWN
+选择某一关键词并重复而得到密钥，如关键词为LEMON时，密钥为：
+LEMONLEMONLE
+对于明文的第一个字母A，对应密钥的第一个字母L，于是使用表格中L行字母表进行加密，得到密文第一个字母L。类似地，明文第二个字母为T，在表格中使用对应的E行进行加密，得到密文第二个字母X。以此类推，可以得到：
+明文：ATTACKATDAWN
+密钥：LEMONLEMONLE
+密文：LXFOPVEFRNHR
+解密的过程则与加密相反。例如：根据密钥第一个字母L所对应的L行字母表，发现密文第一个字母L位于A列，因而明文第一个字母为A。密钥第二个字母E对应E行字母表，而密文第二个字母X位于此行T列，因而明文第二个字母为T。以此类推便可得到明文。
+用数字0-25代替字母A-Z，维吉尼亚密码的加密文法可以写成同余的形式：
+{\displaystyle C_{i}\equiv P_{i}+K_{i}{\pmod {26}}} C_{i}\equiv P_{i}+K_{i}{\pmod  {26}}
+解密方法则能写成：
+{\displaystyle P_{i}\equiv C_{i}-K_{i}{\pmod {26}}} P_{i}\equiv C_{i}-K_{i}{\pmod  {26}}
 
 ## lab2 RC4密码
 
@@ -31,4 +49,4 @@ RC4由伪随机数生成器和异或运算组成。RC4的密钥长度可变，�
  endwhile
 此算法保证每256次循环中S盒的每个元素至少被交换过一次。
 ```
-[代码](https://github.com/IHaoMing/CryptographyLab/blob/master/lab2/RC4.cpp)
+[RC4代码](https://github.com/IHaoMing/CryptographyLab/blob/master/lab2/RC4.cpp)
