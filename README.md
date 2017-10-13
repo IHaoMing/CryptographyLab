@@ -1,6 +1,5 @@
 # CryptographyLab
 
-[TOC]
 
 ## lab1 维吉尼亚密码
 
