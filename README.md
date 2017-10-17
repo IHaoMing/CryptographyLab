@@ -45,3 +45,20 @@ RC4由伪随机数生成器和异或运算组成。RC4的密钥长度可变，�
 此算法保证每256次循环中S盒的每个元素至少被交换过一次。
 ```
 [RC4代码](https://github.com/IHaoMing/CryptographyLab/blob/master/lab1/virginia.cpp)
+
+
+## lab3 求解本源根
+
+### 定义
+
+素数p的原根定义
+如果a是素数p的原根，则数a mod p, a^2 mod p, … , a^(p-1) mod p 是不同的并且包含1到p-1的整数的某种排列。
+特别地，如果a是素数p的本原根，则a, a^2, …, a^(p-1)在 mod p下都不相同。
+
+### 性质
+
+若A为模n的本原根，则A，A的平方，A的3次方，……，A的φ(n)次方模n的余数互不相同，而且构成一个模n的简化剩余系。
+应用编辑
+应用本原根可以证明：若x的[φ(n)/2]次方模n余1，则x为模n的二次剩余；若x的[φ(n)/2]次方模n余-1，则x为模n的非二次剩余。
+
+[解本源根代码](https://github.com/IHaoMing/CryptographyLab/blob/master/lab3/source_root.cpp)
