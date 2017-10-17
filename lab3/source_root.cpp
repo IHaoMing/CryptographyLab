@@ -11,7 +11,7 @@
 using namespace std;
 
 //函数声明
-int get_rank(int num);//获取一个数的阶
+int get_rank(int num);//获取一个数的欧拉函数
 bool isrp(int a, int b);//判断两个正整数是否互素
 bool ispr(int a, int b);//判断a是否为b的本原根
 int get_mod(int a, int n, int t);//迭代求模避免大数运算,返回a的t此方mod b
@@ -52,7 +52,7 @@ bool isrepeat(int a[], int len)
 	return false;
 }
 
-//获取一个数的阶
+//获取一个数的欧拉函数
 int get_rank(int num)
 {
 	int result = 0;
