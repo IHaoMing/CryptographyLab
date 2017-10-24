@@ -1,11 +1,11 @@
 //-----------------------------------------
-//    ÃÜÂëÑ§ÊµÑé;des¼ÓÃÜ
+//    å¯†ç å­¦å®éªŒ;desåŠ å¯†
 //    date:2017-10-22
 //    coded_by:haoming
 //-----------------------------------------
 
 //-----------------------------------------
-//				ËùĞèÍ·ÎÄ¼ş
+//				æ‰€éœ€å¤´æ–‡ä»¶
 //-----------------------------------------
 #include "stdafx.h"
 #include<iostream>
@@ -16,27 +16,29 @@
 using namespace std;
 
 //-----------------------------------------
-//			È«¾Ö±äÁ¿
+//			å…¨å±€å˜é‡
 //-----------------------------------------
-bitset<64> key;                // 64Î»ÃÜÔ¿
-bitset<48> sub_key[16];        // ´æ·Å16ÂÖ×ÓÃÜÔ¿
+bitset<64> key;                // 64ä½å¯†é’¥
+bitset<48> sub_key[16];        // å­˜æ”¾16è½®å­å¯†é’¥
 
 //-----------------------------------------
-//				º¯ÊıÉùÃ÷
+//				å‡½æ•°å£°æ˜
 //-----------------------------------------
-bitset<32> f(bitset<32> R, bitset<48> k);			//des¼ÓÃÜÔËËãµÄfº¯Êı
-bitset<28> left_shift(bitset<28> k, int shift);		//ÃÜÔ¿²úÉú²Ù×÷ÖĞµÄ×óÒÆº¯Êı
-void generateKeys();								//ÃÜÔ¿Éú³Éº¯Êı£ºÉú³É16¸ö48Î»µÄ×ÓÃÜÔ¿
-bitset<64> char_to_bitset(const char s[8]);			//×Ö·û´®×ª¶ş½øÖÆ
-bitset<64> encrypt(bitset<64>& plain);				//¼ÓÃÜº¯Êı
-bitset<64> decrypt(bitset<64>& cipher);				//½âÃÜº¯Êı
+bitset<32> f(bitset<32> R, bitset<48> k);			//desåŠ å¯†è¿ç®—çš„få‡½æ•°
+bitset<28> left_shift(bitset<28> k, int shift);		//å¯†é’¥äº§ç”Ÿæ“ä½œä¸­çš„å·¦ç§»å‡½æ•°
+void generate_keys();								//å¯†é’¥ç”Ÿæˆå‡½æ•°ï¼šç”Ÿæˆ16ä¸ª48ä½çš„å­å¯†é’¥
+bitset<64> char_to_bitset(const char s[8]);			//å­—ç¬¦ä¸²è½¬äºŒè¿›åˆ¶
+char* bitset_to_char(bitset<64> b);					//äºŒè¿›åˆ¶è½¬å­—ç¬¦ä¸²
+bitset<64> encrypt(bitset<64>& plain);				//åŠ å¯†å‡½æ•°
+bitset<64> decrypt(bitset<64>& cipher);				//è§£å¯†å‡½æ•°
+int my_pow(int x, int y);							//æ±‚æ¬¡æ–¹
 
 
 
 //--------------------------------------------
-//			ÊäÈëÊı¾İÊ¹ÓÃµÄÖÃ»»±í
+//			è¾“å…¥æ•°æ®ä½¿ç”¨çš„ç½®æ¢è¡¨
 //--------------------------------------------
-//¡¾1¡¿³õÊ¼ÖÃ»»±í
+//ã€1ã€‘åˆå§‹ç½®æ¢è¡¨
 
 int ip[] = { 58, 50, 42, 34, 26, 18, 10, 2,
 60, 52, 44, 36, 28, 20, 12, 4,
@@ -47,7 +49,7 @@ int ip[] = { 58, 50, 42, 34, 26, 18, 10, 2,
 61, 53, 45, 37, 29, 21, 13, 5,
 63, 55, 47, 39, 31, 23, 15, 7 };
 
-// ¡¾2¡¿Î²ÖÃ»»±í
+// ã€2ã€‘å°¾ç½®æ¢è¡¨
 int ip_1[] = { 40, 8, 48, 16, 56, 24, 64, 32,
 39, 7, 47, 15, 55, 23, 63, 31,
 38, 6, 46, 14, 54, 22, 62, 30,
@@ -59,9 +61,9 @@ int ip_1[] = { 40, 8, 48, 16, 56, 24, 64, 32,
 
 
 //----------------------------------------------
-//				ÃÜÔ¿Ê¹ÓÃµÄÖÃ»»±í
+//				å¯†é’¥ä½¿ç”¨çš„ç½®æ¢è¡¨
 //----------------------------------------------
-// ¡¾1¡¿ÃÜÔ¿ÖÃ»»±í£¬½«64Î»ÃÜÔ¿±ä³É56Î»
+// ã€1ã€‘å¯†é’¥ç½®æ¢è¡¨ï¼Œå°†64ä½å¯†é’¥å˜æˆ56ä½
 int pc_1[] = { 57, 49, 41, 33, 25, 17, 9,
 1, 58, 50, 42, 34, 26, 18,
 10,  2, 59, 51, 43, 35, 27,
@@ -71,7 +73,7 @@ int pc_1[] = { 57, 49, 41, 33, 25, 17, 9,
 14,  6, 61, 53, 45, 37, 29,
 21, 13,  5, 28, 20, 12,  4 };
 
-// ¡¾2¡¿Ñ¹ËõÖÃ»»£¬½«56Î»ÃÜÔ¿Ñ¹Ëõ³É48Î»×ÓÃÜÔ¿
+// ã€2ã€‘å‹ç¼©ç½®æ¢ï¼Œå°†56ä½å¯†é’¥å‹ç¼©æˆ48ä½å­å¯†é’¥
 int pc_2[] = { 14, 17, 11, 24,  1,  5,
 3, 28, 15,  6, 21, 10,
 23, 19, 12,  4, 26,  8,
@@ -81,14 +83,14 @@ int pc_2[] = { 14, 17, 11, 24,  1,  5,
 44, 49, 39, 56, 34, 53,
 46, 42, 50, 36, 29, 32 };
 
-// ¡¾3¡¿Ã¿ÂÖ×óÒÆµÄÎ»Êı
+// ã€3ã€‘æ¯è½®å·¦ç§»çš„ä½æ•°
 int shift_bits[] = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 };
 
 
 //-------------------------------------------------
-//			des¼ÓÃÜÔËËãÊ¹ÓÃµÄÖÃ»»±í
+//			desåŠ å¯†è¿ç®—ä½¿ç”¨çš„ç½®æ¢è¡¨
 //-------------------------------------------------
-// ¡¾1¡¿À©Õ¹ÖÃ»»±í£¬½« 32Î» À©Õ¹ÖÁ 48Î»
+// ã€1ã€‘æ‰©å±•ç½®æ¢è¡¨ï¼Œå°† 32ä½ æ‰©å±•è‡³ 48ä½
 int expand[] = { 32,  1,  2,  3,  4,  5,
 4,  5,  6,  7,  8,  9,
 8,  9, 10, 11, 12, 13,
@@ -98,7 +100,7 @@ int expand[] = { 32,  1,  2,  3,  4,  5,
 24, 25, 26, 27, 28, 29,
 28, 29, 30, 31, 32,  1 };
 
-// ¡¾2¡¿SºĞ£¬Ã¿¸öSºĞÊÇ4x16µÄÖÃ»»±í£¬6Î» -> 4Î»
+// ã€2ã€‘Sç›’ï¼Œæ¯ä¸ªSç›’æ˜¯4x16çš„ç½®æ¢è¡¨ï¼Œ6ä½ -> 4ä½
 int s_box[8][4][16] = {
 	{
 		{ 14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7 },
@@ -150,7 +152,7 @@ int s_box[8][4][16] = {
 	}
 };
 
-// ¡¾3¡¿PÖÃ»»£¬32Î» -> 32Î»
+// ã€3ã€‘Pç½®æ¢ï¼Œ32ä½ -> 32ä½
 int p[] = { 16,  7, 20, 21,
 29, 12, 28, 17,
 1, 15, 23, 26,
@@ -163,62 +165,83 @@ int p[] = { 16,  7, 20, 21,
 
 
 
-//Ö÷º¯Êı
+//ä¸»å‡½æ•°
 int main()
 {
 
 	//-----------------------------------
-	//			×Ö·û´®µÄ¼Ó½âÃÜ
+	//			å­—ç¬¦ä¸²çš„åŠ è§£å¯†
 	//-----------------------------------
 
-	//¡¾1¡¿¼ÓÃÜ
-	string s = "12345678";
+	//ã€1ã€‘åŠ å¯†
+
+	//æ˜æ–‡å’Œå¯†é’¥ï¼ˆé•¿åº¦å‡ä¸º8ï¼Œå³64ä½)
+	string s = "ihaoming";
 	string k = "ihaoming";
+	
+	//è½¬å­˜ä½äºŒè¿›åˆ¶
 	bitset<64> plain = char_to_bitset(s.c_str());
 	key = char_to_bitset(k.c_str());
-	// Éú³É16¸ö×ÓÃÜÔ¿
-	generateKeys();
-	// ÃÜÎÄĞ´Èë a.txt
+	// ç”Ÿæˆ16ä¸ªå­å¯†é’¥
+	generate_keys();
+	//æ‰§è¡ŒåŠ å¯†æ“ä½œ
 	bitset<64> cipher = encrypt(plain);
+	//cout<<bitset_to_char(plain)<<endl;
+
+	//å°†åŠ å¯†åçš„ç»“æœå­˜æ”¾åˆ°cipher.txtæ–‡ä»¶ä¸­
 	fstream file1;
-	file1.open("D://a.txt", ios::binary | ios::out);
+	file1.open("D://cipher.txt", ios::binary | ios::out);
 	file1.write((char*)&cipher, sizeof(cipher));
 	file1.close();
 
-	// ¶ÁÎÄ¼ş a.txt
+	//ã€2ã€‘è§£å¯†
+	//ä»¥äºŒè¿›åˆ¶çš„æ–¹å¼è¯»å–å¯†æ–‡
 	bitset<64> temp;
-	file1.open("D://a.txt", ios::binary | ios::in);
+	file1.open("D://cipher.txt", ios::binary | ios::in);
 	file1.read((char*)&temp, sizeof(temp));
 	file1.close();
 
-	//¡¾2¡¿½âÃÜ
+	//æ‰§è¡Œè§£å¯†æ“ä½œ
 	bitset<64> temp_plain = decrypt(temp);
-	file1.open("D://b.txt", ios::binary | ios::out);
+	//å°†è§£å¯†çš„ç»“æœå­˜å…¥plain.txtæ–‡ä»¶
+	file1.open("D://plain.txt", ios::binary | ios::out);
 	file1.write((char*)&temp_plain, sizeof(temp_plain));
 	file1.close();
 
-	//ÎÄ¼şµÄ¼Ó½âÃÜ
+	//-----------------------------------
+	//			æ–‡ä»¶çš„åŠ è§£å¯†
+	//-----------------------------------
 	ifstream in;
 	ofstream out;
-	in.open("D://flower.jpg", ios::binary);
-	out.open("D://cipher.txt", ios::binary);
+	//åŠ å¯†win7è‡ªå¸¦çš„koalaå›¾ç‰‡
+	in.open("D://Koala.jpeg", ios::binary);
+	out.open("D://cipher2.txt", ios::binary);
+
+	//æ¯æ¬¡è¯»å–8ä¸ªå­—èŠ‚
 	while (in.read((char*)&plain, sizeof(plain)))
 	{
+		//åŠ å¯†
 		bitset<64> cipher = encrypt(plain);
+		//å†™å‡º
 		out.write((char*)&cipher, sizeof(cipher));
-		plain.reset();  // ÖÃ0
+		//æ¸…é›¶
+		plain.reset();  
 	}
 	in.close();
 	out.close();
 
-	// ½âÃÜ cipher.txt£¬²¢Ğ´ÈëÍ¼Æ¬ flower1.jpg
-	in.open("D://cipher.txt", ios::binary);
-	out.open("D://flower1.jpg", ios::binary);
+	// è§£å¯† 
+	in.open("D://cipher2.txt", ios::binary);
+	out.open("D://Koala.jpeg", ios::binary);
+	//æ¯æ¬¡è¯»å–8ä¸ªå­—èŠ‚
 	while (in.read((char*)&plain, sizeof(plain)))
 	{
+		//è§£å¯†
 		bitset<64> temp = decrypt(plain);
+		//å­˜æ”¾ç»“æœ
 		out.write((char*)&temp, sizeof(temp));
-		plain.reset();  // ÖÃ0
+		//æ¸…é›¶
+		plain.reset(); 
 	}
 	in.close();
 	out.close();
@@ -227,26 +250,30 @@ int main()
 
 
 
-//¼ÓÃÜÔËËãµÄfº¯Êı´¦Àí
-//ÊäÈë£º32Î»µÄÊı¾İR,48Î»µÄ×ÓÃÜÔ¿k
-//Êä³ö£º32Î»µÄÊä³ö
+//åŠ å¯†è¿ç®—çš„få‡½æ•°å¤„ç†
+//è¾“å…¥ï¼š32ä½çš„æ•°æ®R,48ä½çš„å­å¯†é’¥k
+//è¾“å‡ºï¼š32ä½çš„è¾“å‡º
 bitset<32> f(bitset<32> R, bitset<48> k)
 {
 	bitset<48> expandR;
-	// ¡¾1¡¿32Î»Êı¾İÀ©Õ¹³É48Î»
+	// ã€1ã€‘32ä½æ•°æ®æ‰©å±•æˆ48ä½
 	for (int i = 0; i<48; ++i)
 		expandR[47 - i] = R[32 - expand[i]];
-	// ¡¾2¡¿£ºÀ©Õ¹ºóµÄÊı¾İÓë48Î»µÄ×ÓÃÜÔ¿×÷Òì»òÔËËã
+	// ã€2ã€‘ï¼šæ‰©å±•åçš„æ•°æ®ä¸48ä½çš„å­å¯†é’¥ä½œå¼‚æˆ–è¿ç®—
 	expandR = expandR ^ k;
-	// ¡¾3¡¿£º²éÕÒs_boxÖÃ»»±í
+	// ã€3ã€‘ï¼šæŸ¥æ‰¾s_boxç½®æ¢è¡¨
 	bitset<32> output;
 	int x = 0;
 	for (int i = 0; i<48; i = i + 6)
 	{
+		//æ¢ç®—åè¿›åˆ¶æ¥è®¡ç®—è¡Œæ•°
 		int row = expandR[47 - i] * 2 + expandR[47 - i - 5];
+		//æ¢ç®—åè¿›åˆ¶æ¥è®¡ç®—åˆ—æ•°
 		int col = expandR[47 - i - 1] * 8 + expandR[47 - i - 2] * 4 + expandR[47 - i - 3] * 2
 			+ expandR[47 - i - 4];
+		//æ‰¾åˆ°s_boxè¡¨ä¸­çš„æ•°å­—
 		int num = s_box[i / 6][row][col];
+		//ç½®æ¢
 		bitset<4> binary(num);
 		output[31 - x] = binary[3];
 		output[31 - x - 1] = binary[2];
@@ -254,7 +281,8 @@ bitset<32> f(bitset<32> R, bitset<48> k)
 		output[31 - x - 3] = binary[0];
 		x += 4;
 	}
-	// ¡¾4¡¿£ºP-ÖÃ»»£¬32 -> 32
+
+	// ã€4ã€‘ï¼šP-ç½®æ¢ï¼Œ32 -> 32
 	bitset<32> tmp = output;
 	for (int i = 0; i<32; ++i)
 		output[31 - i] = tmp[32 - p[i]];
@@ -262,16 +290,16 @@ bitset<32> f(bitset<32> R, bitset<48> k)
 }
 
 
-//ÃÜÔ¿²úÉú¹ı³ÌÖĞCDÁ½²¿·ÖµÄ×óÒÆ²Ù×÷
-//ÊäÈë:28Î»ÃÜÔ¿£¬Î»ÒÆ³¤¶È
-//Êä³ö£º×óÒÆ½á¹û
+//å¯†é’¥äº§ç”Ÿè¿‡ç¨‹ä¸­CDä¸¤éƒ¨åˆ†çš„å·¦ç§»æ“ä½œ
+//è¾“å…¥:28ä½å¯†é’¥ï¼Œä½ç§»é•¿åº¦
+//è¾“å‡ºï¼šå·¦ç§»ç»“æœ
 bitset<28> left_shift(bitset<28> k, int shift)
 {
-	//ÁÙÊ±±äÁ¿
+	//ä¸´æ—¶å˜é‡
 	bitset<28> tmp = k;
 	for (int i = 27; i >= 0; --i)
 	{
-		if (i - shift<0)//·ÀÖ¹Ô½½ç
+		if (i - shift<0)//é˜²æ­¢è¶Šç•Œ
 			k[i] = tmp[i - shift + 28];
 		else
 			k[i] = tmp[i - shift];
@@ -279,130 +307,167 @@ bitset<28> left_shift(bitset<28> k, int shift)
 	return k;
 }
 
-//ÃÜÔ¿Éú³Éº¯Êı£ºÉú³É16¸ö48Î»µÄ×ÓÃÜÔ¿
-void generateKeys()
+//å¯†é’¥ç”Ÿæˆå‡½æ•°ï¼šç”Ÿæˆ16ä¸ª48ä½çš„å­å¯†é’¥
+void generate_keys()
 {
-	//±äÁ¿ÉùÃ÷
+	//å˜é‡å£°æ˜
 	bitset<56> realKey;
 	bitset<28> left;
 	bitset<28> right;
-	bitset<48> compressKey;
+	bitset<48> compress_key;
 
-	//¡¾1¡¿ È¥µôÆæÅ¼±ê¼ÇÎ»£¬½«64Î»ÃÜÔ¿±ä³É56Î»
+	//ã€1ã€‘ å»æ‰å¥‡å¶æ ‡è®°ä½ï¼Œå°†64ä½å¯†é’¥å˜æˆ56ä½
 	for (int i = 0; i<56; ++i)
 		realKey[55 - i] = key[64 - pc_1[i]];
-	//¡¾2¡¿ Éú³É×ÓÃÜÔ¿£¬±£´æÔÚ sub_keys[16] ÖĞ
+	//ã€2ã€‘ ç”Ÿæˆå­å¯†é’¥ï¼Œä¿å­˜åœ¨ sub_keys[16] ä¸­
 	for (int round = 0; round<16; ++round)
 	{
-		// Ç°28Î»Óëºó28Î»
+		// å‰28ä½ä¸å28ä½
 		for (int i = 28; i<56; ++i)
 			left[i - 28] = realKey[i];
 		for (int i = 0; i<28; ++i)
 			right[i] = realKey[i];
-		// ×óÒÆ
+		// å·¦ç§»
 		left = left_shift(left, shift_bits[round]);
 		right = left_shift(right, shift_bits[round]);
-		// Ñ¹ËõÖÃ»»£¬ÓÉ56Î»µÃµ½48Î»×ÓÃÜÔ¿
+		// å‹ç¼©ç½®æ¢ï¼Œç”±56ä½å¾—åˆ°48ä½å­å¯†é’¥
 		for (int i = 28; i<56; ++i)
 			realKey[i] = left[i - 28];
 		for (int i = 0; i<28; ++i)
 			realKey[i] = right[i];
 		for (int i = 0; i<48; ++i)
-			compressKey[47 - i] = realKey[56 - pc_2[i]];
-		sub_key[round] = compressKey;
+			compress_key[47 - i] = realKey[56 - pc_2[i]];
+		sub_key[round] = compress_key;
 	}
 }
 
-//½«char×Ö·ûÊı×é×ªÎª¶ş½øÖÆ
-//ÊäÈë£º³¤¶ÈÎª8µÄ×Ö·ûÊı×é
-//Êä³ö:64Î»bitset¶ÔÏó
-//×¢£ºconst char s[8]£¬8*8 = 64bits
+//å°†charå­—ç¬¦æ•°ç»„è½¬ä¸ºäºŒè¿›åˆ¶
+//è¾“å…¥ï¼šé•¿åº¦ä¸º8çš„å­—ç¬¦æ•°ç»„
+//è¾“å‡º:64ä½bitsetå¯¹è±¡
+//æ³¨ï¼šconst char s[8]ï¼Œ8*8 = 64bits
 bitset<64> char_to_bitset(const char s[8])
 {
 	bitset<64> bits;
 	for (int i = 0; i<8; ++i)
 		for (int j = 0; j<8; ++j)
-			//×óÒÆÒ»Î»ÔÙÓë1ÏàÓëÊµÏÖ°´Î»´æÈ¡¶ş½øÖÆ
+			//å·¦ç§»ä¸€ä½å†ä¸1ç›¸ä¸å®ç°æŒ‰ä½å­˜å–äºŒè¿›åˆ¶
 			bits[i * 8 + j] = ((s[i] >> j) & 1);
 	return bits;
 }
 
-//DES¼ÓÃÜ
-//ÊäÈë£ºÃ÷ÎÄplain
-//Êä³ö£ºÃÜÎÄcipher
+//äºŒè¿›åˆ¶è½¬å­—ç¬¦ä¸²
+char* bitset_to_char(bitset<64> b)
+{
+	 char s[8];
+	 int sum = 0;
+	 for (int i = 0; i<8; ++i)
+	 {
+		for (int j = 0; j<8; ++j)
+		{
+			//å…ˆè½¬ä¸ºåè¿›åˆ¶
+			if (b[i*8+j] == 1)
+			{
+				sum += my_pow(2, 7-j);
+			}
+		}
+		//å†è½¬ä¸ºå­—ç¬¦
+		s[i] = char(sum);
+		sum = 0;
+	 }
+
+	return s;
+}
+
+int my_pow(int x, int y)
+{
+	int result = 1;
+	for (int i = 0; i < y; i++)
+	{
+		result *= x;
+	}
+	return result;
+}
+//DESåŠ å¯†
+//è¾“å…¥ï¼šæ˜æ–‡plain
+//è¾“å‡ºï¼šå¯†æ–‡cipher
 bitset<64> encrypt(bitset<64>& plain)
 {
-	//±äÁ¿ÉùÃ÷
+	//å˜é‡å£°æ˜
 	bitset<64> cipher;
 	bitset<64> currentBits;
 	bitset<32> left;
 	bitset<32> right;
 	bitset<32> newLeft;
-	// ¡¾1¡¿£º³õÊ¼ÖÃ»»IP
+	// ã€1ã€‘ï¼šåˆå§‹ç½®æ¢IP
 	for (int i = 0; i<64; ++i)
 		currentBits[63 - i] = plain[64 - ip[i]];
-	// ¡¾2¡¿£º»ñÈ¡ Li ºÍ Ri
+	// ã€2ã€‘ï¼šè·å– Li å’Œ Ri
 	for (int i = 32; i<64; ++i)
 		left[i - 32] = currentBits[i];
 	for (int i = 0; i<32; ++i)
 		right[i] = currentBits[i];
-	// ¡¾3¡¿£º¹²16ÂÖµü´ú
+	// ã€3ã€‘ï¼š16è½®çš„è¿­ä»£è¿ç®—æ“ä½œ
 	for (int round = 0; round<16; ++round)
 	{
+		//æš‚å­˜å³è¾¹
 		newLeft = right;
+		//å³è¾¹è¾¹ä¸å¯†é’¥è¿›è¡Œfå‡½æ•°æ“ä½œï¼Œç»“æœä¸å·¦è¾¹è¿›è¡ŒæŠ‘æˆ–æ“ä½œï¼Œæœ€åç»“æœèµ‹å€¼ç»™æ–°çš„å³è¾¹
 		right = left ^ f(right, sub_key[round]);
+		//æ—§çš„å³è¾¹èµ‹å€¼ç»™å·¦è¾¹
 		left = newLeft;
 	}
-	// ¡¾4¡¿£ººÏ²¢L16ºÍR16£¬×¢ÒâºÏ²¢Îª R16L16
+	// ã€4ã€‘ï¼šåˆå¹¶L16å’ŒR16ï¼Œæ³¨æ„åˆå¹¶ä¸º R16L16
 	for (int i = 0; i<32; ++i)
 		cipher[i] = left[i];
 	for (int i = 32; i<64; ++i)
 		cipher[i] = right[i - 32];
-	// ¡¾5¡¿£º½áÎ²ÖÃ»»IP-1
+	// ã€5ã€‘ï¼šç»“å°¾ç½®æ¢IP-1
 	currentBits = cipher;
 	for (int i = 0; i<64; ++i)
 		cipher[63 - i] = currentBits[64 - ip_1[i]];
-	// ·µ»ØÃÜÎÄ
+	// è¿”å›å¯†æ–‡
 	return cipher;
 }
 
 
-//DES½âÃÜ
-//ÊäÈë:ÃÜÎÄcipher
-//Êä³ö:Ã÷ÎÄ:plain
+//DESè§£å¯†
+//è¾“å…¥:å¯†æ–‡cipher
+//è¾“å‡º:æ˜æ–‡:plain
 bitset<64> decrypt(bitset<64>& cipher)
 {
-	//±äÁ¿ÉùÃ÷
+	//å˜é‡å£°æ˜
 	bitset<64> plain;
 	bitset<64> currentBits;
 	bitset<32> left;
 	bitset<32> right;
 	bitset<32> newLeft;
-	// ¡¾1¡¿£º³õÊ¼ÖÃ»»IP
+	// ã€1ã€‘ï¼šåˆå§‹ç½®æ¢IP
 	for (int i = 0; i<64; ++i)
 		currentBits[63 - i] = cipher[64 - ip[i]];
-	// ¡¾2¡¿£º»ñÈ¡ Li ºÍ Ri
+	// ã€2ã€‘ï¼šè·å– Li å’Œ Ri
 	for (int i = 32; i<64; ++i)
 		left[i - 32] = currentBits[i];
 	for (int i = 0; i<32; ++i)
 		right[i] = currentBits[i];
-	// ¡¾3¡¿£º¹²16ÂÖµü´ú£¨×ÓÃÜÔ¿ÄæĞòÓ¦ÓÃ£©
+	// ã€3ã€‘ï¼š16è½®è¿­ä»£ï¼ˆè§£å¯†çš„æ—¶å€™ï¼Œå­å¯†é’¥é€†åºåº”ç”¨ï¼‰
 	for (int round = 0; round<16; ++round)
 	{
+		//æš‚å­˜å³è¾¹
 		newLeft = right;
+		//å³è¾¹è¾¹ä¸å¯†é’¥è¿›è¡Œfå‡½æ•°æ“ä½œï¼Œç»“æœä¸å·¦è¾¹è¿›è¡ŒæŠ‘æˆ–æ“ä½œï¼Œæœ€åç»“æœèµ‹å€¼ç»™æ–°çš„å³è¾¹
 		right = left ^ f(right, sub_key[15 - round]);
+		//æ—§çš„å³è¾¹èµ‹å€¼ç»™å·¦è¾¹
 		left = newLeft;
 	}
-	// ¡¾4¡¿£ººÏ²¢L16ºÍR16£¬×¢ÒâºÏ²¢Îª R16L16
+	// ã€4ã€‘ï¼šåˆå¹¶L16å’ŒR16ï¼Œæ³¨æ„åˆå¹¶ä¸º R16L16
 	for (int i = 0; i<32; ++i)
 		plain[i] = left[i];
 	for (int i = 32; i<64; ++i)
 		plain[i] = right[i - 32];
-	// ¡¾5¡¿£º½áÎ²ÖÃ»»IP-1
+	// ã€5ã€‘ï¼šç»“å°¾ç½®æ¢IP-1
 	currentBits = plain;
 	for (int i = 0; i<64; ++i)
 		plain[63 - i] = currentBits[64 - ip_1[i]];
-	// ·µ»ØÃ÷ÎÄ
+	// è¿”å›æ˜æ–‡
 	return plain;
 }
-
