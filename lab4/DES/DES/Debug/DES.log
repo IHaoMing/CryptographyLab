@@ -1,1 +1,7 @@
-﻿  DES.cpp
+﻿  stdafx.cpp
+  DES.cpp
+d:\github\cryptographylab\lab4\des\des\des.cpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+d:\github\cryptographylab\lab4\des\des\des.cpp(378): warning C4172: 返回局部变量或临时变量的地址: s
+  LINK : 没有找到 D:\github\CryptographyLab\lab4\DES\Debug\DES.exe 或上一个增量链接没有生成它；正在执行完全链接
+  DES.vcxproj -> D:\github\CryptographyLab\lab4\DES\Debug\DES.exe
+  DES.vcxproj -> D:\github\CryptographyLab\lab4\DES\Debug\DES.pdb (Full PDB)
